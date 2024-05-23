@@ -43,7 +43,7 @@ def start_app(android_setting):
 @pytest.fixture(scope="session", autouse=False)
 def login_data():
     return {
-        "PHONE": "9113459852",
+        "PHONE": "9113459855",
         'CODE_1': '1',
         'CODE_2': '1',
         'CODE_3': '1',
@@ -59,6 +59,7 @@ def login_patient(start_app, login_data) -> ProfilePage:
         prof_page.click_element('PRFL_BTN_XP', 'XPATH')
         prof_page.click_element('PRFL_EXT_BTN_ID', 'ID')
         prof_page.click_element('PRFL_EXT_CONF_ID', 'ID')
+        prof_page.click_element('PRFL_BTN_XP', 'XPATH')
 
     # создаем словарь кодов для взаимодействия с клавиатурой смартфона
     num = {'0': 7, '1': 8, '2': 9, '3': 10, '4': 11, '5': 12, '6': 13, '7': 14, '8': 15, '9': 16}
@@ -74,3 +75,17 @@ def login_patient(start_app, login_data) -> ProfilePage:
     prof_page.fill_the_field('CODE_4_FLD_ID', login_data['CODE_4'], 'ID')
     prof_page.click_element('NEXT_2_BTN_XP', 'XPATH')
     return prof_page
+
+
+@pytest.fixture(scope="session", autouse=False)
+def unlogin_patient(login_patient):
+    """Функция для разлогинивания, если приложение авторизовано, и для выдачи разрешения приложению"""
+    if not login_patient.check_elem_is_visible('PATRON_FLD_ID', 'ID'):
+        login_patient.click_element('PRFL_BTN_XP', 'XPATH')
+        login_patient.click_element('PERS_DATA_BTN_ID', 'ID')
+
+    if login_patient.check_elem_is_visible('PERMIS_MESS_ID', 'ID'):
+        login_patient.click_element('FOREGRND_ONLY_BTN_ID', 'ID')
+        login_patient.click_element('FOREGRND_ONLY_BTN_ID', 'ID')
+        login_patient.click_element('ALLOW_BTN_ID', 'ID')
+        login_patient.click_element('ALLOW_BTN_ID', 'ID')
