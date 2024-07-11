@@ -5,6 +5,8 @@ locators = {
     # поля ввода
     # поле ввода номера телефона при авторизации
     'PHONE_FLD_XP': '//*[@resource-id="com.doct24.doct24_android:id/phone_number_field"]',
+    # поле ввода email при авторизации
+    'AUTH_EMAIL_FLD_ID': 'com.doct24.doct24_android:id/email_input',
     # поля ввода кода
     'CODE_1_FLD_ID': 'com.doct24.doct24_android:id/reg_code_edit_text_1',
     'CODE_2_FLD_ID': 'com.doct24.doct24_android:id/reg_code_edit_text_2',
@@ -47,11 +49,17 @@ locators = {
     'BLOOD_FLD_ID': 'com.doct24.doct24_android:id/etBloodType',
     # поле группы крови в Медицинских данных при просмотре
     'BLOOD_FLD_V_ID': 'com.doct24.doct24_android:id/tv_patient_blood_type',
+    # поле ввода Аллергена
+    'ALLERG_FLD_ID': 'com.doct24.doct24_android:id/etAllergen',
+    # поле ввода инфо о реакции на аллерген
+    'RECT_ALLERG_FLD_ID': 'com.doct24.doct24_android:id/etReaction',
 
     # кнопки
-    # кнопка далее (авторизация)
-    'NEXT_BTN_XP': '//*[@resource-id="com.doct24.doct24_android:id/reg_phone_next_button"]',
-    'NEXT_2_BTN_XP': '//*[@resource-id="com.doct24.doct24_android:id/reg_code_next_button"]',
+    # кнопки далее (авторизация)
+    'NEXT_BTN_1_ID': 'com.doct24.doct24_android:id/reg_phone_next_button',
+    'NEXT_BTN_2_ID': 'com.doct24.doct24_android:id/reg_code_next_button',
+    'NEXT_BTN_3_ID': 'com.doct24.doct24_android:id/reg_email_next_button',
+    'NEXT_BTN_4_ID': 'com.doct24.doct24_android:id/reg_code_next_button',
     # кнопка сохранения данных пациента
     'SAVE_PTN_DATA_BTN_ID': 'com.doct24.doct24_android:id/save_patient_button',
     # кнопка выбора 15 чиса текущего месяца на календаре
@@ -72,6 +80,26 @@ locators = {
     'CHNG_MED_DATA_BTN_ID': 'com.doct24.doct24_android:id/parametersEditButton',
     # кнопка сохранения Параметров Медицинских данныхс
     'SAVE_PRMTR_BTN_ID': 'com.doct24.doct24_android:id/saveParametresButton',
+    # кнопка профиль в меню
+    'PRFL_BTN_XP': '(//*[@resource-id="com.doct24.doct24_android:id/navigation_bar_item_icon_view"])[4]',
+    # кнопка Личные данные в Профиле
+    'PERS_DATA_BTN_ID': 'com.doct24.doct24_android:id/btn_patient_data',
+    # кнопка выхода из профиля
+    'PRFL_EXT_BTN_ID': 'com.doct24.doct24_android:id/btn_quit_from_profile',
+    # кнопка подждения выхода из профиля
+    'PRFL_EXT_CONF_ID': 'com.doct24.doct24_android:id/dialogButtonAccept',
+    # кнопка Разрешить при использовании приложения
+    'FOREGRND_ONLY_BTN_ID': 'com.android.permissioncontroller:id/permission_allow_foreground_only_button',
+    # кнопка разрешить
+    'ALLOW_BTN_ID': 'com.android.permissioncontroller:id/permission_allow_button',
+    # кнопка вкладки Аллергии в разделе Медицинские данные
+    'ALLERG_TAB_XP': '//*[@text="Аллергии"]',
+    # кнопка добавления инфо об аллергии
+    'ADD_ALLERG_BTN_ID': 'com.doct24.doct24_android:id/allergyAddButton',
+    # кнопка сохранения инфо об аллергии
+    'ALLERG_SV_BTN_ID': 'com.doct24.doct24_android:id/saveAllergyButton',
+    # кнопка для подтверждения прав приложения для системы андройд (иногда вылезает при запуске)
+    'PERMISS_BTN_ID': 'com.android.permissioncontroller:id/permission_allow_foreground_only_button',
 
     # сообщения об ошибках
     # сообщение об ошибке валидации поля Фамилия
@@ -81,14 +109,18 @@ locators = {
     'ER_MESS_LMANE_XP_MNDTRY': '(//*[@resource-id="com.doct24.doct24_android:id/textinput_error"])[1]',
     # сообщение об ошибке минимальной длины Фамилии
     'ER_MESS_LMANE_XP_MIN': '//*[@resource-id="com.doct24.doct24_android:id/textinput_error" and '
-                            '@text="В поле должно быть минимум 2 символа"]',
+                            '@text="Минимальная длина: 2 символа"]',
     # сообщение об ошибке максимальной длины Фамилии
     'ER_MESS_LMANE_XP_MAX': '//*[@resource-id="com.doct24.doct24_android:id/textinput_error" and '
-                            '@text="В поле должно быть максимум 50 символов"]',
+                            '@text="Максимальная длина: 50 символов"]',
     # сообщение об ошибке валидации поля Имя
     'ER_MESS_FMANE_XP_SYMB': '//android.widget.TextView[@resource-id="com.doct24.doct24_android:id/textinput_error"]',
     # сообщение об ошибке валидации поля Отчество
-    'ER_MESS_PATRON_ID': 'com.doct24.doct24_android:id/textinput_error',
+    'ER_MESS_PATRON_XP_MIN': '//*[@resource-id="com.doct24.doct24_android:id/textinput_error" and '
+                             '@text="Минимальная длина: 2 символа"]',
+    # сообщение об ошибке максимальной длины Фамилии
+    'ER_MESS_PATRON_XP_MAX': '//*[@resource-id="com.doct24.doct24_android:id/textinput_error" and '
+                            '@text="Максимальная длина: 50 символов"]',
 
     # сообщение об ошибке Незаполненности Имени
     'ER_MESS_FMANE_XP_MNDTRY': '//*[@resource-id="com.doct24.doct24_android:id/textinput_error" '
@@ -104,22 +136,13 @@ locators = {
     'ER_MESS_WEIGHT_FLD_XP': '//android.widget.TextView[@bounds="[84,712][996,755]"]',
 
 
-
-    # кнопка профиль в меню
-    'PRFL_BTN_XP': '(//*[@resource-id="com.doct24.doct24_android:id/navigation_bar_item_icon_view"])[4]',
-    # кнопка Личные данные в Профиле
-    'PERS_DATA_BTN_ID': 'com.doct24.doct24_android:id/btn_patient_data',
-    # кнопка выхода из профиля
-    'PRFL_EXT_BTN_ID': 'com.doct24.doct24_android:id/btn_quit_from_profile',
-    # кнопка подждения выхода из профиля
-    'PRFL_EXT_CONF_ID': 'com.doct24.doct24_android:id/dialogButtonAccept',
-    # кнопка Разрешить при использовании приложения
-    'FOREGRND_ONLY_BTN_ID': 'com.android.permissioncontroller:id/permission_allow_foreground_only_button',
-    # кнопка разрешить
-    'ALLOW_BTN_ID': 'com.android.permissioncontroller:id/permission_allow_button',
-
-    # сообщения
+    # сообщения и заголовки
     # приветствие на стартовом экране
     'HELLO_MSG_ID': 'com.doct24.doct24_android:id/user_greetings',
+
+    # заголовок подраздела "Медицинские данные"
+    'MED_DATA_TITLE_ID': 'com.doct24.doct24_android:id/meetingListTitle',
+    # заголовок подраздела "Личные данные" - "Заполните данные"
+    'INSERT_DATA_TITLE_ID': 'com.doct24.doct24_android:id/patient_data_title'
 }
 

@@ -6,6 +6,7 @@ import time
 
 from Pages.profile_page import ProfilePage
 from Locators import locators_patient
+from Config import PHONE_NUMBER, EMAIL
 
 driver = None
 
@@ -43,7 +44,8 @@ def start_app(android_setting):
 @pytest.fixture(scope="session", autouse=False)
 def login_data():
     return {
-        "PHONE": "9113459855",
+        "PHONE": PHONE_NUMBER,
+        'EMAIL': EMAIL,
         'CODE_1': '1',
         'CODE_2': '1',
         'CODE_3': '1',
@@ -52,15 +54,25 @@ def login_data():
 
 @pytest.fixture(scope="session", autouse=False)
 def login_patient(start_app, login_data) -> ProfilePage:
-    """Функция для заполнения поля при помощи клавиатуры смартфона"""
+    """Фикстура для авторизации"""
     prof_page = ProfilePage(start_app, locators_patient.locators)
+    # если видим сообщение от андройда про права доступа, то жмем кнопку назад
+    if prof_page.check_elem_is_visible('PERMISS_BTN_ID', 'ID'):
+        prof_page.click_back_btn()
     # выходим из профиля, если приложение уже авторизовано
     if prof_page.check_elem_is_visible('HELLO_MSG_ID', 'ID'):
         prof_page.click_element('PRFL_BTN_XP', 'XPATH')
         prof_page.click_element('PRFL_EXT_BTN_ID', 'ID')
         prof_page.click_element('PRFL_EXT_CONF_ID', 'ID')
-        prof_page.click_element('PRFL_BTN_XP', 'XPATH')
+        # если в итоге попадаем на поле ввода имейла, то жмем кнопку назад, чтобы оказаться на шаге вводе номера телеф
+        if prof_page.check_elem_is_visible('AUTH_EMAIL_FLD_ID', 'ID'):
+            prof_page.click_back_btn()
 
+    # вариант авторизации по номеру телефона
+    if prof_page.check_elem_is_visible('HELLO_MSG_ID', 'ID'):
+        prof_page.click_element('PRFL_BTN_XP', 'XPATH')
+        prof_page.click_element('PRFL_EXT_BTN_ID', 'ID')
+        prof_page.click_element('PRFL_EXT_CONF_ID', 'ID')
     # создаем словарь кодов для взаимодействия с клавиатурой смартфона
     num = {'0': 7, '1': 8, '2': 9, '3': 10, '4': 11, '5': 12, '6': 13, '7': 14, '8': 15, '9': 16}
     field = prof_page.get_elem_obj('PHONE_FLD_XP', 'XPATH')
@@ -68,24 +80,54 @@ def login_patient(start_app, login_data) -> ProfilePage:
     # вводим номер телефона через системную клавиатуру андройда
     for i in login_data['PHONE']:
         start_app.press_keycode(num[i])
-    prof_page.click_element('NEXT_BTN_XP', 'XPATH')
+    # нажимаем кнопку Далее
+    prof_page.click_element('NEXT_BTN_1_ID', 'ID')
+    # ввод проверочного кода
     prof_page.fill_the_field('CODE_1_FLD_ID', login_data['CODE_1'], 'ID')
     prof_page.fill_the_field('CODE_2_FLD_ID', login_data['CODE_2'], 'ID')
     prof_page.fill_the_field('CODE_3_FLD_ID', login_data['CODE_3'], 'ID')
     prof_page.fill_the_field('CODE_4_FLD_ID', login_data['CODE_4'], 'ID')
-    prof_page.click_element('NEXT_2_BTN_XP', 'XPATH')
+    # нажимаем кнопку Далее
+    prof_page.click_element('NEXT_BTN_2_ID', 'ID')
+    # вводим email
+    prof_page.fill_the_field('AUTH_EMAIL_FLD_ID', login_data['EMAIL'], 'ID')
+    prof_page.click_element('NEXT_BTN_3_ID', 'ID')
+    # ввод проверочного кода, отправленного на email производится вручную, код останавливается на 30 сек
+    # необходимо ввести код и нажать кнопку Далее
+    time.sleep(20)
     return prof_page
 
 
-@pytest.fixture(scope="session", autouse=False)
-def unlogin_patient(login_patient):
-    """Функция для разлогинивания, если приложение авторизовано, и для выдачи разрешения приложению"""
-    if not login_patient.check_elem_is_visible('PATRON_FLD_ID', 'ID'):
+@pytest.fixture(scope="function", autouse=False)
+def go_to_profile_page(login_patient):
+    """Фикстура для перехода (возвращения) на страницу анкеты"""
+
+    # если не видим на экране первого поля анкеты (фамилия), то функция исполняется
+    if not login_patient.check_elem_is_visible('LNAME_FLD_ID', 'ID'):
+        # если кнопка профиля не доступна, то скорее всего на экрне служебое сообщение от андройда, и мы нажимаем кнопку
+        # назад
+        if not login_patient.check_elem_is_visible('PRFL_BTN_XP', 'XPATH'):
+            login_patient.click_back_btn()
+        # если кнопка перехода в Профиль дотупна, то нажимаем ее
         login_patient.click_element('PRFL_BTN_XP', 'XPATH')
+        # это еще одна подстраховка - если кнопка перехода в Профиль не сработала (и мы не видим на экране кнопки
+        # "Личные данные"), то нажимаем ее еще раз
+        if not login_patient.check_elem_is_visible('PERS_DATA_BTN_ID', 'ID'):
+            login_patient.click_element('PRFL_BTN_XP', 'XPATH')
+        # нажимаем кнопку Личные данные
         login_patient.click_element('PERS_DATA_BTN_ID', 'ID')
 
-    if login_patient.check_elem_is_visible('PERMIS_MESS_ID', 'ID'):
-        login_patient.click_element('FOREGRND_ONLY_BTN_ID', 'ID')
-        login_patient.click_element('FOREGRND_ONLY_BTN_ID', 'ID')
-        login_patient.click_element('ALLOW_BTN_ID', 'ID')
-        login_patient.click_element('ALLOW_BTN_ID', 'ID')
+
+@pytest.fixture(scope="function", autouse=False)
+def go_to_med_data_page(login_patient):
+    """Фикстура для перехода (возвращения) на страницу медицинских данных"""
+
+    # если кнопка профиля не доступна, то скорее всего на экрне служебое сообщение от андройда, и мы нажимаем кнопку
+    # назад
+    if not login_patient.check_elem_is_visible('PRFL_BTN_XP', 'XPATH'):
+        login_patient.click_back_btn()
+    # если кнопка Профиля доступна, нажимаем ее и потом переходим в раздел медицинских данных
+    login_patient.click_element('PRFL_BTN_XP', 'XPATH')
+    login_patient.click_element('MED_DATA_BTN_ID', 'ID')
+
+

@@ -110,13 +110,13 @@ class ProfilePage:
             return elems
 
     def check_elem_is_visible(self, field_locator: str, find_meth: str):
-        """Функция возвращает объект элемента"""
+        """Функция возвращает true или false без эксепшна"""
         # wait = self.get_wait()
         time.sleep(1)
         if find_meth == 'XPATH':
             try:
                 # wait.until(lambda x: x.find_element(AppiumBy.XPATH, value=self.locators[field_locator]))
-                time.sleep(3)
+                time.sleep(1)
                 self.driver.find_element(by=AppiumBy.XPATH, value=self.locators[field_locator])
             except NoSuchElementException:
                 return False
@@ -124,7 +124,7 @@ class ProfilePage:
         elif find_meth == 'ID':
             try:
                 # wait.until(lambda x: x.find_element(AppiumBy.ID, value=self.locators[field_locator]))
-                time.sleep(3)
+                time.sleep(1)
                 self.driver.find_element(by=AppiumBy.ID, value=self.locators[field_locator])
             except NoSuchElementException:
                 return False
@@ -170,7 +170,7 @@ class ProfilePage:
 
         return date_eighteen_y_ago
 
-    def scroll_and_get_elem_obj(self):
+    def scroll_and_get_elem_obj_city_field(self):
         self.driver.find_element(AppiumBy.ANDROID_UIAUTOMATOR, 'new UiScrollable(new UiSelector().resourceId'
                                                                '("com.doct24.doct24_android:id/layout_personal_data")).'
                                                                'scrollIntoView(new UiSelector().text("Город"))')
@@ -190,6 +190,10 @@ class ProfilePage:
 
     def tap_by_coordinates(self, x: int, y: int):
         TouchAction(self.driver).tap(None, x, y, 1).perform()
+
+    def click_back_btn(self):
+        self.driver.press_keycode(4)
+
 
 
 
